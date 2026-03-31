@@ -9,7 +9,7 @@ export interface PickupStatus {
 }
 
 const PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
-const CLIENT_EMAIL = process.env.GOOGLE_CLIENT_EMAIL;
+const CLIENT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
 const SPREADSHEET_ID = process.env.GOOGLE_SPREADSHEET_ID;
 
 const auth = new google.auth.GoogleAuth({
@@ -31,7 +31,7 @@ export async function getPickupStatusBySerialNumber(
 
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: "Sheet1!A:E",
+    range: "main!A:R",
   });
 
   const rows = response.data.values;
@@ -39,13 +39,14 @@ export async function getPickupStatusBySerialNumber(
     return null;
   }
 
-  const searchSn = sn.trim().toLowerCase();
+  const searchSn = sn.trim().toUpperCase();
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
-    const serialNumber = row[0]?.toString().trim() || "";
+    const serialNumber = row[1]?.toString().trim() || "";
 
-    if (serialNumber.toLowerCase() === searchSn) {
+    if (serialNumber.toUpperCase() === searchSn) {
+      console.log(row);
       return {
         serialNumber,
         model: row[1]?.toString().trim() || "",
