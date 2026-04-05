@@ -1,11 +1,24 @@
 import { google } from "googleapis";
 
+export interface PositionSpec {
+  type: string;
+  magnet: string;
+  magnetWire: string;
+  dcr: string;
+}
+
+export interface PickupSpec {
+  serialNumber: string;
+  neck?: PositionSpec;
+  middle?: PositionSpec;
+  bridge?: PositionSpec;
+}
+
 export interface PickupStatus {
   serialNumber: string;
-  model: string;
-  outputK: string;
   status: string;
   lastUpdate: string;
+  spec: PickupSpec;
 }
 
 const PRIVATE_KEY = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n");
@@ -46,13 +59,51 @@ export async function getPickupStatusBySerialNumber(
     const serialNumber = row[1]?.toString().trim() || "";
 
     if (serialNumber.toUpperCase() === searchSn) {
-      console.log(row);
+      const createdAt = row[0]?.toString().trim() || "";
+      let magnetNeckDisplayValue = `alnico ${row[3]?.toString().trim() || ""}/${row[4]?.toString().trim() || ""}`;
+      let magnetMiddleDisplayValue = `alnico ${row[8]?.toString().trim() || ""}/${row[9]?.toString().trim() || ""}`;
+      let magnetBridgeDisplayValue = `alnico ${row[13]?.toString().trim() || ""}/${row[14]?.toString().trim() || ""}`;
+      if (row[3]?.toString().trim() === row[4]?.toString().trim()) {
+        magnetNeckDisplayValue = `alnico ${row[3]?.toString().trim() || ""}`;
+      }
+      if (row[8]?.toString().trim() === row[9]?.toString().trim()) {
+        magnetMiddleDisplayValue = `alnico ${row[8]?.toString().trim() || ""}`;
+      }
+      if (row[13]?.toString().trim() === row[14]?.toString().trim()) {
+        magnetBridgeDisplayValue = `alnico ${row[13]?.toString().trim() || ""}`;
+      }
+      const spec: PickupSpec = {
+        serialNumber: row[1]?.toString().trim() || "",
+        neck: row[2]
+          ? {
+              type: row[2]?.toString().trim() || "",
+              magnet: magnetNeckDisplayValue,
+              magnetWire: row[5]?.toString().trim() || "",
+              dcr: row[6]?.toString().trim() || "",
+            }
+          : undefined,
+        middle: row[7]
+          ? {
+              type: row[7]?.toString().trim() || "",
+              magnet: magnetMiddleDisplayValue,
+              magnetWire: row[10]?.toString().trim() || "",
+              dcr: row[11]?.toString().trim() || "",
+            }
+          : undefined,
+        bridge: row[12]
+          ? {
+              type: row[12]?.toString().trim() || "",
+              magnet: magnetBridgeDisplayValue,
+              magnetWire: row[15]?.toString().trim() || "",
+              dcr: row[16]?.toString().trim() || "",
+            }
+          : undefined,
+      };
       return {
         serialNumber,
-        model: row[1]?.toString().trim() || "",
-        outputK: row[2]?.toString().trim() || "",
-        status: row[3]?.toString().trim() || "",
-        lastUpdate: row[4]?.toString().trim() || "",
+        status: row[17]?.toString().trim() || "",
+        lastUpdate: createdAt,
+        spec,
       };
     }
   }

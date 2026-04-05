@@ -2,18 +2,13 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { PickupStatus } from "../services/googleSheets";
 
 export default function Home() {
   const [serial, setSerial] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [data, setData] = useState<{
-    serialNumber: string;
-    model: string;
-    outputK: string;
-    status: string;
-    lastUpdate: string;
-  } | null>(null);
+  const [data, setData] = useState<PickupStatus | null>(null);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +48,7 @@ export default function Home() {
         />
       </div>
 
-      <main className="w-full max-w-2xl px-6 py-12 flex flex-col items-center z-10">
+      <main className="w-full max-w-3xl px-6 py-12 flex flex-col items-center z-10">
         {/* Header with Logo */}
         <header className="w-full flex flex-col items-center mb-16">
           <div className="relative w-64 h-24 mb-6">
@@ -72,7 +67,6 @@ export default function Home() {
           <div className="w-12 h-1 bg-brand-rust mt-4 rounded-full"></div>
         </header>
 
-        {/* Search Section */}
         <form onSubmit={handleSearch} className="w-full mb-12">
           <div className="relative group flex flex-col sm:flex-row gap-4 items-center">
             <div className="relative flex-1 w-full">
@@ -111,7 +105,7 @@ export default function Home() {
           {data && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 rounded-3xl bg-brand-cream/10 border border-brand-cream/20 backdrop-blur-xl overflow-hidden shadow-2xl">
               <div className="p-8 pb-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8 border-b border-brand-cream/10 pb-6">
                   <div>
                     <span className="text-xs font-bold uppercase tracking-widest text-brand-rust block mb-1">
                       Serial Verified
@@ -126,22 +120,103 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-                  <div className="p-6 bg-brand-green/40 rounded-2xl border border-brand-cream/5">
-                    <span className="text-[10px] font-bold uppercase tracking-widest opacity-40 block mb-2">
-                      Pickup Model
-                    </span>
-                    <span className="text-xl font-medium">{data.model}</span>
-                  </div>
-                  <div className="p-6 bg-brand-green/40 rounded-2xl border border-brand-cream/5">
-                    <span className="text-[10px] font-bold uppercase tracking-widest opacity-40 block mb-2">
-                      Target Output
-                    </span>
-                    <span className="text-xl font-medium">
-                      {data.outputK}{" "}
-                      <span className="text-sm opacity-40">kΩ</span>
-                    </span>
-                  </div>
+                {/* Specs Table */}
+                <div className="overflow-x-auto -mx-8 px-8 mb-8">
+                  <table className="w-full border-collapse text-left">
+                    <thead>
+                      <tr>
+                        <th className="py-4 px-4 border-b border-brand-cream/20">
+                          <div className="relative w-20 h-8 opacity-50">
+                            <Image
+                              src="/logo.png"
+                              alt="Logo"
+                              fill
+                              className="object-contain object-left"
+                            />
+                          </div>
+                        </th>
+                        <th className="py-4 px-6 bg-brand-green/60 border border-brand-cream/20 text-center text-xs font-bold uppercase tracking-widest">
+                          Neck
+                        </th>
+                        <th className="py-4 px-6 bg-brand-green/60 border border-brand-cream/20 text-center text-xs font-bold uppercase tracking-widest">
+                          Middle
+                        </th>
+                        <th className="py-4 px-6 bg-brand-green/60 border border-brand-cream/20 text-center text-xs font-bold uppercase tracking-widest">
+                          Bridge
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-sm">
+                      <tr>
+                        <td className="py-4 px-4 font-bold uppercase tracking-widest text-[10px] opacity-60 border-b border-brand-cream/10">
+                          Type
+                        </td>
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-medium">
+                          {data.spec.neck?.type || "-"}
+                        </td>
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-medium">
+                          {data.spec.middle?.type || "-"}
+                        </td>
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-medium">
+                          {data.spec.bridge?.type || "-"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="py-4 px-4 font-bold uppercase tracking-widest text-[10px] opacity-60 border-b border-brand-cream/10">
+                          MAGNET
+                        </td>
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-medium">
+                          {data.spec.neck?.magnet || "-"}
+                        </td>
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-medium">
+                          {data.spec.middle?.magnet || "-"}
+                        </td>
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-medium">
+                          {data.spec.bridge?.magnet || "-"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="py-4 px-4 font-bold uppercase tracking-widest text-[10px] opacity-60 border-b border-brand-cream/10">
+                          Magnet wire
+                        </td>
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-medium">
+                          {data.spec.neck?.magnetWire || "-"}
+                        </td>
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-medium">
+                          {data.spec.middle?.magnetWire || "-"}
+                        </td>
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-medium">
+                          {data.spec.bridge?.magnetWire || "-"}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="py-4 px-4 font-bold uppercase tracking-widest text-[10px] opacity-60 border-b border-brand-cream/10">
+                          DCR
+                        </td>
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-mono text-brand-rust font-bold">
+                          {data.spec.neck?.dcr
+                            ? (parseFloat(data.spec.neck.dcr) / 1000).toFixed(
+                                1,
+                              ) + "K"
+                            : "-"}
+                        </td>
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-mono text-brand-rust font-bold">
+                          {data.spec.middle?.dcr
+                            ? (parseFloat(data.spec.middle.dcr) / 1000).toFixed(
+                                1,
+                              ) + "K"
+                            : "-"}
+                        </td>
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-mono text-brand-rust font-bold">
+                          {data.spec.bridge?.dcr
+                            ? (parseFloat(data.spec.bridge.dcr) / 1000).toFixed(
+                                1,
+                              ) + "K"
+                            : "-"}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
 
@@ -154,7 +229,7 @@ export default function Home() {
             </div>
           )}
 
-          {/* {!data && !error && !loading && (
+          {!data && !error && !loading && (
             <div className="flex flex-col items-center justify-center opacity-30 py-20 grayscale">
               <div className="relative w-24 h-24 mb-6">
                 <Image
@@ -169,7 +244,7 @@ export default function Home() {
                 Awaiting serial input...
               </p>
             </div>
-          )} */}
+          )}
         </div>
       </main>
 
