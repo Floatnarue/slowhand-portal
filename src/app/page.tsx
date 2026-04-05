@@ -37,18 +37,32 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-brand-green text-brand-cream font-sans relative overflow-hidden flex flex-col items-center">
-      <div className="absolute inset-0 opacity-60 pointer-events-none -z-10">
-        <Image
-          src="/minor-pic.png"
-          alt="Background Texture"
-          fill
-          sizes="100vw"
-          className="object-cover"
-          priority
-        />
+      <div className="absolute inset-0 opacity-60 pointer-events-none z-0">
+        {/* Mobile Background */}
+        <div className="sm:hidden absolute inset-0">
+          <Image
+            src="/mobile-bg.png"
+            alt="Mobile Background"
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
+          />
+        </div>
+        {/* Desktop Background */}
+        <div className="hidden sm:block absolute inset-0">
+          <Image
+            src="/desktop-bg.png"
+            alt="Desktop Background"
+            fill
+            sizes="100vw"
+            className="object-cover"
+            priority
+          />
+        </div>
       </div>
 
-      <main className="w-full max-w-3xl px-6 py-12 flex flex-col items-center z-10">
+      <main className="w-full max-w-3xl px-6 py-12 flex flex-col items-center relative z-10">
         {/* Header with Logo */}
         <header className="w-full flex flex-col items-center mb-16">
           <div className="relative w-64 h-24 mb-6">
@@ -241,7 +255,7 @@ export default function Home() {
                 />
               </div>
               <p className="text-center text-sm font-light uppercase tracking-widest italic">
-                Awaiting serial input...
+                KUY
               </p>
             </div>
           )}
@@ -249,7 +263,7 @@ export default function Home() {
       </main>
 
       <footer
-        className="w-full mt-auto py-8 text-center opacity-30 text-[10px] uppercase tracking-widest font-bold"
+        className="w-full mt-auto py-8 text-center opacity-30 text-[10px] uppercase tracking-widest font-bold relative z-10"
         suppressHydrationWarning
       >
         © {new Date().getFullYear()} Slowhand Guitar Pickups. All Rights
