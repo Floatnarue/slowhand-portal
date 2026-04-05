@@ -60,18 +60,18 @@ export async function getPickupStatusBySerialNumber(
 
     if (serialNumber.toUpperCase() === searchSn) {
       const createdAt = row[0]?.toString().trim() || "";
-      let magnetNeckDisplayValue = `alnico ${row[3]?.toString().trim() || ""}/${row[4]?.toString().trim() || ""}`;
-      let magnetMiddleDisplayValue = `alnico ${row[8]?.toString().trim() || ""}/${row[9]?.toString().trim() || ""}`;
-      let magnetBridgeDisplayValue = `alnico ${row[13]?.toString().trim() || ""}/${row[14]?.toString().trim() || ""}`;
-      if (row[3]?.toString().trim() === row[4]?.toString().trim()) {
-        magnetNeckDisplayValue = `alnico ${row[3]?.toString().trim() || ""}`;
-      }
-      if (row[8]?.toString().trim() === row[9]?.toString().trim()) {
-        magnetMiddleDisplayValue = `alnico ${row[8]?.toString().trim() || ""}`;
-      }
-      if (row[13]?.toString().trim() === row[14]?.toString().trim()) {
-        magnetBridgeDisplayValue = `alnico ${row[13]?.toString().trim() || ""}`;
-      }
+      const formatMagnet = (m1: any, m2: any) => {
+        const v1 = m1?.toString().trim() || "";
+        const v2 = m2?.toString().trim() || "";
+        if (!v1 && !v2) return "-";
+        if (v1 === v2 || !v2) return `alnico ${v1}`;
+        if (!v1) return `alnico ${v2}`;
+        return `alnico ${v1}/${v2}`;
+      };
+
+      const magnetNeckDisplayValue = formatMagnet(row[3], row[4]);
+      const magnetMiddleDisplayValue = formatMagnet(row[8], row[9]);
+      const magnetBridgeDisplayValue = formatMagnet(row[13], row[14]);
       const spec: PickupSpec = {
         serialNumber: row[1]?.toString().trim() || "",
         neck: row[2]
