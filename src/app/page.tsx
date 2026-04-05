@@ -243,7 +243,7 @@ export default function Home() {
             </div>
           )}
 
-          {!data && !error && !loading && (
+          {/* {!data && !error && !loading && (
             <div className="flex flex-col items-center justify-center opacity-30 py-20 grayscale">
               <div className="relative w-24 h-24 mb-6">
                 <Image
@@ -254,11 +254,8 @@ export default function Home() {
                   className="object-contain"
                 />
               </div>
-              <p className="text-center text-sm font-light uppercase tracking-widest italic">
-                KUY
-              </p>
             </div>
-          )}
+          )} */}
         </div>
       </main>
 
