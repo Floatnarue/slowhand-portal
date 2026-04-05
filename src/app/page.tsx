@@ -207,21 +207,21 @@ export default function Home() {
                         <td className="py-4 px-4 font-bold uppercase tracking-widest text-[10px] opacity-60 border-b border-brand-cream/10">
                           DCR
                         </td>
-                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-mono text-brand-rust font-bold">
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-mono font-bold">
                           {data.spec.neck?.dcr
                             ? (parseFloat(data.spec.neck.dcr) / 1000).toFixed(
                                 1,
                               ) + "K"
                             : "-"}
                         </td>
-                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-mono text-brand-rust font-bold">
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-mono font-bold">
                           {data.spec.middle?.dcr
                             ? (parseFloat(data.spec.middle.dcr) / 1000).toFixed(
                                 1,
                               ) + "K"
                             : "-"}
                         </td>
-                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-mono text-brand-rust font-bold">
+                        <td className="py-4 px-6 border border-brand-cream/10 text-center font-mono font-bold">
                           {data.spec.bridge?.dcr
                             ? (parseFloat(data.spec.bridge.dcr) / 1000).toFixed(
                                 1,
